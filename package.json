@@ -1,0 +1,33 @@
+{
+  "name": "hls-test",
+  "version": "1.0.1",
+  "description": "test non-live hls stream download",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "hls-test": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yarsky-tgz/hls-test.git"
+  },
+  "keywords": [
+    "test",
+    "hls",
+    "m3u8"
+  ],
+  "author": "Yaroslav Dobzhanskij <merlyn.tgz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yarsky-tgz/hls-test/issues"
+  },
+  "homepage": "https://github.com/yarsky-tgz/hls-test#readme",
+  "dependencies": {
+    "fetch-video": "^2.5.1",
+    "pretty-bytes": "^5.3.0",
+    "stats-percentile": "^3.1.0",
+    "terminal-kit": "^1.33.15"
+  }
+}
