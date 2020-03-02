@@ -46,18 +46,21 @@ const { argv: [, , url, refreshPeriod] } = process;
 const isLive = !!refreshPeriod;
 const refreshPeriodTime = parseInt((refreshPeriod || '0'), 10);
 let totalSegments = 0;
+let totalTransferred = 0;
+let totalSpeed = 0;
 const startTime = currentTime();
 let totalTime = 0;
+let totalDownloadTime = 0;
 const showStats = ({ speed, progress, transferred, segments, progressBar }) => {
   const { time, speed: segmentSpeed, size } = lastSegment;
   if (progressBar) progressBar.update(progress / 100);
   term
     .previousLine(1).column(1).eraseLine()
-    .yellow(`Speed: `).white(prettyBytes(speed))
+    .yellow(`Speed: `).white(prettyBytes(isLive ? totalSpeed : speed))
     .forwardTab()
     .green(`Segments: `).white(`${isLive ? totalSegments : segments.transferred}`).green('/').gray(`${isLive ? '-' : segments.length}`)
     .forwardTab()
-    .blue('Transferred: ').gray(prettyBytes(transferred))
+    .blue('Transferred: ').gray(prettyBytes(isLive ? totalTransferred : transferred))
     .forwardTab()
     .cyan('Total time: ').gray(Math.floor(totalTime))
     .previousLine(10).column(1).eraseLine()
@@ -85,8 +88,13 @@ const start = (url) => {
   });
   downloader.on('lastSegmentStats', (lastSegmentStats) => {
     Object.assign(lastSegment, lastSegmentStats);
-    if (isLive) totalSegments++;
     const { time, speed, size } = lastSegment;
+    if (isLive) {
+      totalSegments++;
+      totalTransferred += size;
+      totalDownloadTime += time;
+      totalSpeed = Math.round(totalTransferred / totalDownloadTime);
+    }
     const targets = [segmentTimes, segmentSpeeds, segmentSizes];
     const percentiles = [timePercentiles, speedPercentiles, sizePercentiles];
     const sources = [time, speed, size];
@@ -104,6 +112,7 @@ const start = (url) => {
   return downloader.go()
     .then(() => {
       if (progressBar) progressBar.update(1);
+      if (!isLive) term("\n\n");
     })
     .catch(e => console.log(e));
 };
