@@ -1,2 +1,2 @@
 # hls-test
-test non-live hls stream download
+test live and non-live hls stream download
